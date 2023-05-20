@@ -2,6 +2,7 @@ const Pet = require("../models/petModel");
 const bcrypt = require("bcryptjs");
 const User = require("../models/userModel");
 const ProfilePicture = require("../models/profilePictureModel");
+const Adoption = require("../models/adoptionModel");
 
 exports.register = async (req, res) => {
   try {
@@ -171,7 +172,7 @@ exports.adoptionForm = async (req, res) => {
     ) {
       return res.json({ status: 400, message: "Please enter all fields" });
     }
-    const adoptionForm = await User.create({
+    const adoptionForm = await Adoption.create({
       name,
       email,
       address,

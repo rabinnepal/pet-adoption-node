@@ -1,3 +1,4 @@
+const Adoption = require("../models/adoptionModel");
 const Pet = require("../models/petModel");
 const { cloudinary } = require("../services/cloudinaryConfig");
 const path = require("path");
@@ -96,6 +97,38 @@ exports.deletePets = async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.json({
+      status: 400,
+      message: "Something went wrong",
+      errorMessage: err.message,
+    });
+  }
+};
+
+exports.getAllAdoptionForm = async (req, res) => {
+  try {
+    const adoptions = await Adoption.find();
+    if (adoptions) {
+      return res.json({ status: 200, adoptions });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.json({
+      status: 400,
+      message: "Something went wrong",
+      errorMessage: err.message,
+    });
+  }
+};
+exports.getSingleAdoptionForm = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const adoption = await Adoption.findById(id);
+    if (adoption) {
+      return res.json({ status: 200, adoption });
+    }
+  } catch (err) {
+    console.log(err);
+    res.json({
       status: 400,
       message: "Something went wrong",
       errorMessage: err.message,
