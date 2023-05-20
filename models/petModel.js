@@ -8,6 +8,8 @@ const petSchema = new Schema({
   breed: { type: String },
   age: { type: Number },
   description: { type: String },
+  isVaccinated: { type: Boolean, default: false },
 });
 
-module.exports = mongoose.model("Pet", petSchema);
+const Pet = mongoose.model("Pet", petSchema);
+module.exports = Pet;

@@ -4,8 +4,8 @@ const morgan = require("morgan");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 const userRoute = require("./routes/userRoute");
+const adminRoute = require("./routes/adminRoute");
 const mongoConnection = require("./config/db");
-const path = require("path");
 
 dotenv.config();
 
@@ -15,8 +15,11 @@ mongoConnection(process.env.MONGO_URL);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static(path.join(__dirname, "uploads")));
+app.use(morgan("dev"));
+
+// app.use(express.static(path.join(__dirname, "uploads")));
 app.use("/api/user", userRoute);
+app.use("/api/admin", adminRoute);
 
 // app.get("/", (req, res) => console.log(req.headers));
 
