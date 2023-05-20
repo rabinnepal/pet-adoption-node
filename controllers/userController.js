@@ -1,4 +1,5 @@
 const userModel = require("../models/userModel");
+const bcrypt = require("bcryptjs");
 
 exports.register = async (req, res) => {
   try {
@@ -10,7 +11,7 @@ exports.register = async (req, res) => {
       username,
       name,
       email,
-      password: bcrypt.hasSync(password, 10), //hashing the password
+      password: bcrypt.hashSync(password, 10), //hashing the password
     });
     if (user) {
       return res.json({
