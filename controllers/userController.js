@@ -66,11 +66,9 @@ exports.profilePicture = async (req, res) => {
     const image = await cloudinary.uploader.upload(req.file.path, {
       folder: "pet-adoption/profile",
     });
-    const profilePicture = await ProfilePicture.findByIdAndUpdate({ _id });
-    //     {
-    //   image: image.secure_url,
-    // }
-
+    const profilePicture = await ProfilePicture.findByIdAndUpdate({
+      image: image.secure_url,
+    });
     if (profilePicture) {
       return res.json({
         status: 200,
