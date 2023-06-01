@@ -9,15 +9,26 @@ const {
   getAllAdoptionForm,
   getSingleAdoptionForm,
 } = require("../controllers/adminController");
-const { multer, storage } = require("./../services/multerConfig");
+// const { multer, storage } = require("./../services/multerConfig");
 // const upload = multer({ storage: storage });
-const upload = require("./../services/multerConfig");
+// const upload = require("./../services/multerConfig");
+const { isAuthenticated } = require("../middleware/Auth");
+const multer = require("multer");
+const { storage } = require("../services/cloudinaryConfig");
+const upload = multer({ storage });
 
 // pets api routes
-router.route("/pets").post(upload.single("image"), addPets).get(getAllPets);
-router.route("/pet/:id").get(getSinglePet).patch(updatePets).delete(deletePets);
+router
+  .route("/pets")
+  .post(isAuthenticated, upload.single("image"), addPets)
+  .get(isAuthenticated, getAllPets);
+router
+  .route("/pet/:id")
+  .get(getSinglePet)
+  .patch(isAuthenticated, updatePets)
+  .delete(isAuthenticated, deletePets);
 // get adoption
-router.route("/adoptions").get(getAllAdoptionForm);
-router.route("/adoption/:id").get(getSingleAdoptionForm);
+router.route("/adoptions").get(isAuthenticated, getAllAdoptionForm);
+router.route("/adoption/:id").get(isAuthenticated, getSingleAdoptionForm);
 
 module.exports = router;

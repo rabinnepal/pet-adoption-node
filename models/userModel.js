@@ -10,7 +10,7 @@ const userSchema = new Schema({
   image: {
     type: String,
     default:
-      "https://res.cloudinary.com/dklthtpiy/image/upload/v1684616083/pet-adoption/profile/24-248253_user-profile-default-image-png-clipart-png-download_ypc02m.png",
+      "https://res.cloudinary.com/dklthtpiy/image/upload/v1684665629/pets/933-9332131_profile-picture-default-png_vxoj6o.jpg",
   },
 });
 

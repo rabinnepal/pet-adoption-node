@@ -5,20 +5,21 @@ const path = require("path");
 
 exports.addPets = async (req, res) => {
   try {
+    const userId = req.userId;
+    console.log(userId);
     const { name, animal, breed, age, description, isVaccinated } = req.body;
-    // const image = req.file.filename;
-    const image = await cloudinary.uploader.upload(req.file.path, {
-      folder: "pet-adoption/pets",
-    });
+    const image = req.file.originalname;
+    console.log(image);
     const addPets = await Pet.create({
       //   image: process.env.BACKEND_URL + "/" + req.file.filename,
-      image: image.secure_url,
+      image: image,
       name,
       animal,
       breed,
       age,
       description,
       isVaccinated,
+      users: userId,
     });
     if (addPets) {
       return res.json({ status: 200, message: "Pet created successfully" });

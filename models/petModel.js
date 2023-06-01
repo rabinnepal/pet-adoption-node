@@ -9,6 +9,7 @@ const petSchema = new Schema({
   age: { type: Number },
   description: { type: String },
   isVaccinated: { type: Boolean, default: false },
+  users: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
 });
 
 const Pet = mongoose.model("Pet", petSchema);

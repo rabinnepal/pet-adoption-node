@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/userModel");
 const ProfilePicture = require("../models/profilePictureModel");
 const Adoption = require("../models/adoptionModel");
+const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
   try {
@@ -44,7 +45,9 @@ exports.logIn = async (req, res) => {
   const user = await User.findOne({
     $or: [{ email: identifier }, { username: identifier }],
   });
-
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
+    expiresIn: "30d",
+  });
   if (!identifier) {
     return res.json({ status: 400, message: "Invalid credentials" });
   }
@@ -58,18 +61,17 @@ exports.logIn = async (req, res) => {
   return res.json({
     status: 200,
     message: "Login successful",
-    token: user._id,
+    token: token,
     user,
   });
 };
 exports.profilePicture = async (req, res) => {
   try {
-    const image = await cloudinary.uploader.upload(req.file.path, {
-      folder: "pet-adoption/profile",
-    });
-    const profilePicture = await ProfilePicture.findByIdAndUpdate({
-      image: image.secure_url,
-    });
+    const id = req.params;
+    const image = req.file.originalname;
+    console.log(req.file);
+
+    const profilePicture = await ProfilePicture.findByIdAndUpdate(id);
     if (profilePicture) {
       return res.json({
         status: 200,
@@ -121,7 +123,7 @@ exports.getProfile = async (req, res) => {
 
 exports.getAllPets = async (req, res) => {
   try {
-    const pets = await Pet.find();
+    const pets = await Pet.find().populate("users", "-password");
     if (pets) {
       return res.json({ status: 200, pets });
     }
