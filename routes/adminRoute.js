@@ -8,6 +8,9 @@ const {
   deletePets,
   getAllAdoptionForm,
   getSingleAdoptionForm,
+  displayCategories,
+  addCategory,
+  deleteCategory,
 } = require("../controllers/adminController");
 // const { multer, storage } = require("./../services/multerConfig");
 // const upload = multer({ storage: storage });
@@ -30,5 +33,10 @@ router
 // get adoption
 router.route("/adoptions").get(isAuthenticated, getAllAdoptionForm);
 router.route("/adoption/:id").get(isAuthenticated, getSingleAdoptionForm);
+router
+  .route("/category")
+  .post(isAuthenticated, addCategory)
+  .get(isAuthenticated, displayCategories);
+router.route("/category/:id").delete(isAuthenticated, deleteCategory);
 
 module.exports = router;
