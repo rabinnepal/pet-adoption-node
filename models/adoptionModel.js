@@ -9,6 +9,11 @@ const adoptionSchema = new Schema({
   phone: { type: String },
   petNameForAdoption: { type: String },
   doesOwnPets: { type: Boolean, default: false },
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending",
+  },
 });
 
 const Adoption = mongoose.model("Adoption", adoptionSchema);

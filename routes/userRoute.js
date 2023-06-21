@@ -15,6 +15,10 @@ const multer = require("multer");
 const { storage } = require("../services/cloudinaryConfig");
 const upload = multer({ storage });
 const { isAuthenticated } = require("../middleware/Auth");
+const {
+  sendRegistrationEmail,
+  sendSubmissionConfirmationEmail,
+} = require("../middleware/nodeMailer");
 
 router.route("/register").post(register);
 router.route("/login").post(logIn);

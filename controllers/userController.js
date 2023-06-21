@@ -4,6 +4,8 @@ const User = require("../models/userModel");
 const ProfilePicture = require("../models/profilePictureModel");
 const Adoption = require("../models/adoptionModel");
 const jwt = require("jsonwebtoken");
+const sendEmail = require("../middleware/nodeMailer");
+// const sendEmail = require("../middleware/sendEmail");
 
 exports.register = async (req, res) => {
   try {
@@ -18,6 +20,11 @@ exports.register = async (req, res) => {
       password: bcrypt.hashSync(password, 10), //hashing the password
     });
     if (user) {
+      await sendEmail({
+        email,
+        subject: "Registration Confirmation",
+        text: `Dear ${name},\n\nThank you for registering! We look forward to serving you.\n\nBest regards,\nYour Pet Adoption Team`,
+      });
       return res.json({
         status: 200,
         message: "User registered successfully!!",
@@ -95,7 +102,7 @@ exports.profilePicture = async (req, res) => {
 
 exports.editProfile = async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req._id);
+    const user = await User.findByIdAndUpdate(req.user._id);
     if (user) {
       return res.json({ status: 200, message: "Profile updated successfully" });
     } else {
@@ -111,9 +118,8 @@ exports.editProfile = async (req, res) => {
   }
 };
 exports.getProfile = async (req, res) => {
-  const user = await User.findById(req._id);
-  // .populate("reviews")
-  // .select("-password");
+  const userId = req.user._id;
+  const user = await User.findById(userId).select("-password");
   if (user) {
     return res.json({ status: 200, user });
   } else {
@@ -163,17 +169,17 @@ exports.adoptionForm = async (req, res) => {
       petNameForAdoption,
       doesOwnPets,
     } = req.body;
-    if (
-      !name ||
-      !email ||
-      !address ||
-      !age ||
-      !phone ||
-      !petNameForAdoption ||
-      !doesOwnPets
-    ) {
-      return res.json({ status: 400, message: "Please enter all fields" });
-    }
+    // if (
+    //   !name ||
+    //   !email ||
+    //   !address ||
+    //   !age ||
+    //   !phone ||
+    //   !petNameForAdoption ||
+    //   !doesOwnPets
+    // ) {
+    //   return res.json({ status: 400, message: "Please enter all fields" });
+    // }
     const adoptionForm = await Adoption.create({
       name,
       email,
@@ -182,8 +188,14 @@ exports.adoptionForm = async (req, res) => {
       phone,
       petNameForAdoption,
       doesOwnPets,
+      status: "pending",
     });
     if (adoptionForm) {
+      await sendEmail({
+        email,
+        subject: "Adoption Form Submission Confirmation",
+        text: `Dear ${name},\n\nThank you for submitting the adoption form. We will review your application and get back to you soon.\n\nBest regards,\nYour Pet Adoption Team`,
+      });
       return res.json({
         status: 200,
         message: "Adoption process registered successfully!!",
